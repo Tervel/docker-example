@@ -1,0 +1,37 @@
+version: "2"
+services:
+  nginx:
+    image: nginx
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/src
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - web
+
+  redis:
+    image: redis:latest
+
+  web:
+    build: .
+    command: daphne -b 0.0.0.0 -p 8000 sendLive.asgi:channel_layer
+    volumes:
+      - .:/code
+    links:
+      - redis
+    expose:
+      - "8000"
+    depends_on:
+      - db
+
+  worker:
+    build: .
+    command: python manage.py runworker
+    volumes:
+      - .:/code
+    links:
+      - redis
+
+  db:
+    image: postgres

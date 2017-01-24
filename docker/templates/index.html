@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="theme-color" content="#004BA8">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#004BA8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+  </head>
+  <body>
+
+    <table id="aTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Hobby</th>
+          <th>Favorite Music</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fred</td>
+          <td>Roller Skating</td>
+          <td>Disco</td>
+        </tr>
+        <tr>
+          <td>Helen</td>
+          <td>Rock Climbing</td>
+          <td>Alternative</td>
+        </tr>
+        <tr>
+          <td>Glen</td>
+          <td>Traveling</td>
+          <td>Classical</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+      socket = new WebSocket("ws://" + window.location.host);
+      // socket.onmessage = function(e) {
+      //     alert(e.data);
+      // }
+
+
+      let table = document.getElementById("aTable")
+
+
+      socket.onmessage = function(e) {
+        let jsonData = JSON.parse(e.data)
+        console.log(JSON.parse(e.data));
+        console.log(jsonData.name)
+        let nameColumn;
+        console.log(table.rows.length)
+
+        for (let i = 1; i < table.rows.length; ++i) {
+          nameColumn = table.rows[i].firstElementChild.innerHTML;
+          console.log(nameColumn);
+
+          console.log('pre-if')
+          if (nameColumn === jsonData.name) {
+            console.log('true')
+            table.rows[i].firstElementChild.innerHTML = "success!";
+          }
+        }
+      }
+
+    </script>
+  </body>
+</html>
